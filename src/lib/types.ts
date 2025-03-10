@@ -1,20 +1,21 @@
 export type FitnessLevel = 'Beginner' | 'Intermediate' | 'Advanced';
 export type FitnessGoal = 'build_muscle' | 'lose_weight' | 'maintain' | 'improve_strength' | 'improve_endurance';
 
-export type MuscleGroup = 
-  | 'Abs' 
-  | 'Back' 
-  | 'Biceps' 
-  | 'Calves' 
-  | 'Chest' 
-  | 'Forearms'
-  | 'Glutes'
-  | 'Hamstrings'
-  | 'Neck'
-  | 'Quads'
-  | 'Shoulders'
-  | 'Triceps'
-  | 'Upper traps';
+export enum MuscleGroup {
+  Abs = 'Abs',
+  Back = 'Back',
+  Biceps = 'Biceps',
+  Calves = 'Calves',
+  Chest = 'Chest',
+  Forearms = 'Forearms',
+  Glutes = 'Glutes',
+  Hamstrings = 'Hamstrings',
+  Neck = 'Neck',
+  Quads = 'Quads',
+  Shoulders = 'Shoulders',
+  Triceps = 'Triceps',
+  UpperTraps = 'Upper traps'
+}
 
 export type WorkoutType = 'Strength' | 'Hypertrophy' | 'Endurance' | 'Cardio';
 
@@ -67,10 +68,85 @@ export interface Workout {
 export interface WorkoutSet {
   id: string;
   exerciseId: string;
-  weight: number; // in kg
   reps: number;
-  completed: boolean;
+  weight: number;
+  isBodyweight: boolean;
   notes?: string;
+  completed: boolean;
+  completedAt?: Date;
+}
+
+export interface WorkoutExercise {
+  id: string;
+  name: string;
+  muscleGroup: string;
+  color: string;
+  sets: WorkoutSet[];
+  notes?: string;
+}
+
+export interface WorkoutPlaylist {
+  id: string;
+  name: string;
+  description?: string;
+  exercises: WorkoutExercise[];
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface ScheduledWorkout {
+  id: string;
+  playlistId: string;
+  date: Date;
+  completed: boolean;
+  completedAt?: Date;
+  progress: number; // Percentage of completion
+}
+
+export interface WorkoutWeek {
+  id: string;
+  name: string;
+  description?: string;
+  schedule: {
+    [key in DayOfWeek]: string;
+  };
+  startDate: Date;
+  endDate: Date;
+  isTemplate: boolean;
+}
+
+export interface WorkoutCycle {
+  id: string;
+  name: string;
+  description?: string;
+  weeks: WorkoutWeek[];
+  currentWeekIndex: number;
+  autoRotate: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export enum DayOfWeek {
+  Monday = 'MONDAY',
+  Tuesday = 'TUESDAY',
+  Wednesday = 'WEDNESDAY',
+  Thursday = 'THURSDAY',
+  Friday = 'FRIDAY',
+  Saturday = 'SATURDAY',
+  Sunday = 'SUNDAY'
+}
+
+export interface WorkoutProgress {
+  totalWorkouts: number;
+  completedWorkouts: number;
+  streak: number;
+  lastWorkout?: Date;
+  muscleGroupProgress: {
+    [key: string]: {
+      sets: number;
+      target: number;
+    };
+  };
 }
 
 export interface CardioSession {
@@ -107,7 +183,7 @@ export const OPTIMAL_SETS_PER_WEEK: Record<FitnessLevel, Record<MuscleGroup, num
     Quads: 10,
     Shoulders: 10,
     Triceps: 6,
-    'Upper traps': 6
+    UpperTraps: 6
   },
   Intermediate: {
     Abs: 10,
@@ -122,7 +198,7 @@ export const OPTIMAL_SETS_PER_WEEK: Record<FitnessLevel, Record<MuscleGroup, num
     Quads: 15,
     Shoulders: 20,
     Triceps: 10,
-    'Upper traps': 10
+    UpperTraps: 10
   },
   Advanced: {
     Abs: 15,
@@ -137,7 +213,7 @@ export const OPTIMAL_SETS_PER_WEEK: Record<FitnessLevel, Record<MuscleGroup, num
     Quads: 20,
     Shoulders: 25,
     Triceps: 20,
-    'Upper traps': 10
+    UpperTraps: 10
   }
 };
 

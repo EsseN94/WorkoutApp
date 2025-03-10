@@ -269,7 +269,7 @@ export default function MuscleGroupPage({ params }: { params: { group: string } 
   // Calculate progress for muscle group
   const getMuscleGroupProgress = () => {
     const totalSets = quickSets.length;
-    const target = 10; // Example target, adjust based on your requirements
+    const target = OPTIMAL_SETS_PER_WEEK['Beginner'][muscleGroup];
     return {
       current: totalSets,
       target,
